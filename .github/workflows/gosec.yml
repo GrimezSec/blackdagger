@@ -16,10 +16,22 @@ jobs:
       - name: Run Gosec Security Scanner
         uses: securego/gosec@master
         with:
-          # we let the report trigger content trigger a failure using the GitHub Security features.
+          # We let the report trigger content trigger a failure using the GitHub Security features.
           args: '-no-fail -fmt sarif -out results.sarif ./...'
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v2
         with:
           # Path to SARIF file relative to the root of the repository
           sarif_file: results.sarif
+      
+      - name: Build
+        run: |
+          mkdir ./bin && protoc -I=./ --go_out=./internal ./internal/proto/*.proto  && go build -o ./bin/blackdagger .
+
+      - name: Run
+        run: |
+          blackdagger server
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.11.0
+        with:
+          target: 'http://[::]:9093'
