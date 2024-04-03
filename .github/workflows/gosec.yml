@@ -17,9 +17,10 @@ jobs:
 
       - name: Run Gosec Security Scanner
         id: gosec
-        uses: securego/gosec@master
-        with:
-          args: ./...
+        run: |
+          export PATH=$PATH:$(go env GOPATH)/bin
+          go get github.com/securego/gosec/cmd/gosec
+          gosec ./...
 
       - name: Start Application
         id: start-app
