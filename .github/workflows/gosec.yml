@@ -9,14 +9,15 @@ jobs:
     steps:
       - name: Checkout Source
         uses: actions/checkout@v3
-      - name: Run Gosec Security Scanner
-        uses: securego/gosec@master
-        with:
-          args: ./...
       - name: Generate SBOM
         uses: anchore/sbom-action@v0
       - name: Generate SBOM
         uses: advanced-security/generate-sbom-action@v1
         with:
           token: ${{ secrets.sbom_token }}
+      - name: Run Gosec Security Scanner
+        uses: securego/gosec@master
+        with:
+          args: ./...
+
                   
