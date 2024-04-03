@@ -50,11 +50,7 @@ jobs:
         run: chmod +x blackdagger
         
       - name: Start App
-        run: './blackdagger server'
-        
-      - name: Wait for Application to Start
-        id: wait-app
-        run: sleep 10
+        run: './blackdagger server & sleep 10'
 
       - name: ZAP Full Scan
         id: zap-scan
