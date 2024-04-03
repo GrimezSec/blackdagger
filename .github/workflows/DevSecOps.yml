@@ -50,7 +50,7 @@ jobs:
         run: chmod +x blackdagger
         
       - name: Start App
-        run: './blackdagger -server'
+        run: './blackdagger server'
         
       - name: Wait for Application to Start
         id: wait-app
