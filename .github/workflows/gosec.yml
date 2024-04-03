@@ -19,9 +19,13 @@ jobs:
       - name: Generate SBOM
         id: sbom
         uses: anchore/sbom-action@v0 
-      
+
       - name: Run Gosec Security Scanner
-        id: gosec
+        id: GoSec Scan
         uses: securego/gosec@master
         with:
-          args: ./...
+          args: '-no-fail -fmt sarif -out results.sarif ./...'
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: results.sarif
