@@ -1,0 +1,104 @@
+name: Run Gosec and ZAP Scan
+on:
+  workflow_dispatch:
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    env:
+      GO111MODULE: on
+    steps:
+      - name: Set up Nodejs
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.21.x
+
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v2
+
+      - name: Installing protoc-gen-go
+        run: |
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+
+      - name: Installing swagger
+        run: |
+          go install github.com/go-swagger/go-swagger/cmd/swagger@latest
+
+      - name: Set up Nodejs
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Set up yarn
+        run: npm install --global yarn
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Yarn install
+        run: yarn install
+        working-directory: ui
+
+      - name: Build web UI
+        run: yarn build
+        working-directory: ui
+
+      - name: Copy web assets
+        run: |
+          cp ui/dist/*.js ./service/frontend/assets/
+          cp ui/dist/*.woff ./service/frontend/assets/
+          cp ui/dist/*.woff2 ./service/frontend/assets/
+
+      - name: Cache Go modules
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Build
+        run: |
+          mkdir ./bin && protoc -I=./ --go_out=./internal ./internal/proto/*.proto  && go build -o ./bin/blackdagger .
+      
+      - name: Checkout Source
+        id: checkout
+        uses: actions/checkout@v3
+
+      - name: Generate SBOM
+        id: sbom
+        uses: anchore/sbom-action@v0 
+
+      - name: Run Gosec Security Scanner
+        id: gosec
+        uses: securego/gosec@master
+        with:
+          args: '-no-fail -fmt sarif -out results.sarif ./...'
+      
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+      
+      - name: Change file permission to executable
+        run: chmod +x startservices.sh
+        
+      - name: Start Application
+        id: start-app
+        run: ./startservices.sh
+
+      - name: Wait for Application to Start
+        id: wait-app
+        run: sleep 10
+
+      - name: ZAP Full Scan
+        id: zap-scan
+        uses: zaproxy/action-full-scan@v0.10.0
+        with:
+          token: ${{ secrets.github_token }}
+          target: http://localhost:8080
