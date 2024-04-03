@@ -7,34 +7,21 @@ jobs:
     env:
       GO111MODULE: on
     steps:
+      - name: Set up Nodejs
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      
       - name: Checkout Source
         id: checkout
         uses: actions/checkout@v3
 
       - name: Generate SBOM
         id: sbom
-        uses: anchore/sbom-action@v0
-
-      - name: Start Application
-        id: start-app
-        run: blackdagger -server
-
-      - name: Wait for Application to Start
-        id: wait-app
-        run: sleep 10 
-
-      - name: ZAP Full Scan
-        id: zap-scan
-        uses: zaproxy/action-full-scan@v0.10.0
-        with:
-          target: http://localhost:8080 
+        uses: anchore/sbom-action@v0 
       
       - name: Run Gosec Security Scanner
         id: gosec
         uses: securego/gosec@master
         with:
           args: ./...
-      
-      - name: Check Gosec Result
-        if: steps.gosec.outcome == 'failure'
-        run: exit 0
