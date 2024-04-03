@@ -43,8 +43,15 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: results.sarif
+      - name: Build App
+        run: go build -o blackdagger main.go
+
+      - name: Change Permissions
+        run: chmod +x blackdagger
+        
       - name: Start App
-        run: go run main.go -server
+        run: ./blackdagger -server
+        
       - name: Wait for Application to Start
         id: wait-app
         run: sleep 10
