@@ -21,7 +21,7 @@ jobs:
         uses: anchore/sbom-action@v0 
 
       - name: Run Gosec Security Scanner
-        id: GoSec Scan
+        id: gosec
         uses: securego/gosec@master
         with:
           args: '-no-fail -fmt sarif -out results.sarif ./...'
