@@ -23,7 +23,7 @@
 
 <div align="center">
 
-[Installation](#installation) | [Quick Start Docs](https://blackdagger.readthedocs.io/en/latest/quickstart.html#launch-the-web-ui) 
+[Installation](#installation) | [Quick Start Docs](https://blackdagger.readthedocs.io/en/latest/quickstart.html#launch-the-web-ui) | [Blackdagger YAML Creator GPT4](https://chat.openai.com/g/g-joF9jRCLD-blackdagger-yaml-creator)
 
 </div>
 
@@ -55,9 +55,9 @@ What sets Blackdagger apart is its simplicity and versatility. Unlike traditiona
 
 You can find everything about Blackdagger, including this README, in our [documentation](https://blackdagger.readthedocs.io).
 
-Below, you can find the videos that can help you to get started with Blackdagger:
+Below, you can find the **videos** that can help you to get started with Blackdagger:
 
-| Installation and Setup of Blackdagger | Usage of Blackdagger | DAG Creation and Running in Blackdagger |
+| Installation and Setup of Blackdagger Video | Usage of Blackdagger Video | DAG Creation and Running in Blackdagger Video|
 |:-:|:-:|:-:|
 | [![Installation and Setup of Blackdagger](https://img.youtube.com/vi/GnFJlfEfxSk/0.jpg)](https://www.youtube.com/watch?v=GnFJlfEfxSk) | [![Usage of Blackdagger](https://img.youtube.com/vi/ezeudtCWI3w/0.jpg)](https://www.youtube.com/watch?v=ezeudtCWI3w) | [![DAG Creation and Running in Blackdagger](https://img.youtube.com/vi/1oVbahg1R5I/0.jpg)](https://www.youtube.com/watch?v=1oVbahg1R5I) |
 
@@ -66,7 +66,15 @@ Below, you can find the videos that can help you to get started with Blackdagger
 ### Via Bash script
 
 ```sh
-curl -L https://raw.githubusercontent.com/ErdemOzgen/blackdagger/main/scripts/blackdagger-installer.sh | sudo bash
+# Step 1: Download the script
+curl -L https://raw.githubusercontent.com/ErdemOzgen/blackdagger/main/scripts/blackdagger-installer.sh -o blackdagger-installer.sh
+
+# Step 2: Make the script executable if needed
+chmod +x blackdagger-installer.sh
+
+# Step 3: Run the script with sudo
+sudo bash blackdagger-installer.sh
+
 ```
 **Important Note:** Within the Blackdagger server, to access the GoTTY web terminal, you must manually start the `default-gotty-service` DAG found in the DAGs section. Blackdagger utilizes GoTTY for web terminal functionality, which, for security reasons, does not automatically start upon system initialization.
 
@@ -77,6 +85,8 @@ curl -L https://raw.githubusercontent.com/ErdemOzgen/blackdagger/main/scripts/bl
 ```sh
 # In Blackdagger repo run this commmands 
 docker compose up 
+# If docker compose does not work please try to docker compose build
+#docker compose build
 # You can access web terminal in http://127.0.0.1:8080
 # Also You can access gotty web terminal http://127.0.0.1:8090 username: blackdagger password: blackdagger
 # Do not forget run default-gotty-service dags in http://[::]:8080/dags/default-gotty-service .
