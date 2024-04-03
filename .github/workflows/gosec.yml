@@ -13,3 +13,10 @@ jobs:
         uses: securego/gosec@master
         with:
           args: ./...
+      - name: Generate SBOM
+        uses: anchore/sbom-action@v0
+      - name: Generate SBOM
+        uses: advanced-security/generate-sbom-action@v1
+        with:
+          token: ${{ github.token }}
+                  
