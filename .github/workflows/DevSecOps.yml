@@ -19,12 +19,7 @@ jobs:
 
       - name: Install Protoc
         uses: arduino/setup-protoc@v2
-
-      - name: Set up Nodejs
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-      
+    
       - name: Checkout Source
         id: checkout
         uses: actions/checkout@v3
@@ -50,7 +45,23 @@ jobs:
         with:
           name: gosec-results
           path: results.sarif
-      
+
+      - name: Depcheck
+        uses: dependency-check/Dependency-Check_Action@main
+        id: Depcheck
+        with:
+          project: 'test'
+          path: '.'
+          format: 'HTML'
+          out: 'reports'
+          args: >
+            --enableRetired
+      - name: Upload Test results
+        uses: actions/upload-artifact@master
+        with:
+           name: Depcheck report
+           path: ${{github.workspace}}/reports
+    
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v3
         with:
