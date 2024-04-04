@@ -39,6 +39,12 @@ jobs:
         with:
           args: '-no-fail -fmt sarif -out results.sarif ./...'
       
+      - name: Save Gosec output as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: gosec-results
+          path: results.sarif
+      
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v3
         with:
