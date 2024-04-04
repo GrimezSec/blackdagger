@@ -33,6 +33,12 @@ jobs:
         id: sbom
         uses: anchore/sbom-action@v0 
 
+      - name: GitLeaks
+        id: gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Run Gosec Security Scanner
         id: gosec
         uses: securego/gosec@master
